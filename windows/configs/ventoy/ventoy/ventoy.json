@@ -1,0 +1,11 @@
+{
+  "theme": {
+    "file": "/ventoy/theme/Tela/theme.txt"
+  },
+  "injection": [
+    {
+      "parent": "/iso/WinNT10",
+      "archive": "/injection/windows.zip"
+    }
+  ]
+}

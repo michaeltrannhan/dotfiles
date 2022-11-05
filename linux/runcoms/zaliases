@@ -1,0 +1,10 @@
+# shellcheck disable=SC2148
+
+# Make aliases work with sudo
+alias sudo='sudo '
+
+# Other
+alias ls='ls --color=auto --group-directories-first -v'
+alias rr='rm -rf'
+alias now='date +"%T"'
+alias week='date +%V'
