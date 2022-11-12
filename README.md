@@ -54,9 +54,10 @@ If you set your escape character with EscapeChar option in ~/.ssh/config or with
 
 Assume that the escape character is `~`: `~C-L 8000:localhost:9000`.
 
-### Access special Windows folders using shell
+### Windows special folders
 
-Look up `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\`
+- [System special folders](https://docs.microsoft.com/en-us/dotnet/api/system.environment.specialfolder)
+- `HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\`
 
 ### ssh_config global settings vs `Host *`
 
