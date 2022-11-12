@@ -12,7 +12,7 @@ if (-not "$env:VSCODE") {
   ) | ForEach-Object -Process {
     if (Get-Command -Name "$_") {
       $env:VSCODE = "$_"
-      break
+      return
     }
   }
 }
