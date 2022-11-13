@@ -6,9 +6,8 @@ Invoke-Command -ScriptBlock $([ScriptBlock]::Create(
   ))
 
 $MaximumHistoryCount = 1024
-Set-PSReadLineOption -MaximumHistoryCount 1024
+Set-PSReadLineOption -MaximumHistoryCount $MaximumHistoryCount
 Set-PSReadLineOption -BellStyle None
-Set-PSReadLineOption -PredictionSource 'History' -PredictionViewStyle 'InlineView'
 Set-PSReadLineOption -ShowToolTips
 
 function Invoke-Starship-PreCommand {

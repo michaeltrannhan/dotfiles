@@ -74,10 +74,7 @@ function Install-Base {
 
   @(
     'PowerShellGet',
-    'PSReadLine',
-    'PSScriptAnalyzer',
-    'posh-git',
-    'Terminal-Icons'
+    'PSReadLine'
   ) | ForEach-Object -Process { Install-Module -Name $_ -Scope CurrentUser -Force }
 
   winget install --id 'GnuPG.Gpg4win' --override "/C=`"$PWD\configs\gpg4win.ini`" /S"
@@ -90,6 +87,11 @@ function Install-Base {
 }
 
 function Install-Prompt {
+  @(
+    'posh-git',
+    'Terminal-Icons'
+  ) | ForEach-Object -Process { Install-Module -Name $_ -Scope CurrentUser -Force }
+
   @(
     'Microsoft.PowerShell',
     'Starship.Starship'
