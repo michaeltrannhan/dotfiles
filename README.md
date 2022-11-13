@@ -10,17 +10,6 @@ Review the code and remove things you don't want or need.
 
 Use at your own risk!
 
-## Prerequisites
-
-### Linux
-
-- None
-
-### Windows
-
-- [PowerShell Core](https://github.com/PowerShell/PowerShell)
-- Run the install script as administrator
-
 ## Feedback
 
 Suggestions/improvements are [welcome and encouraged](https://github.com/hoang-himself/dotfiles/issues)!

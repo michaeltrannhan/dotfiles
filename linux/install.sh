@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+if [[ $EUID -eq 0 ]]; then
+  echo 'Run script without sudoer'
+  exit 1
+fi
 
 mkdir -p "$HOME"/.{config,cache,local}
 mkdir -p "$HOME"/.local/{share,state,bin}

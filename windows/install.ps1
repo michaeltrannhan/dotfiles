@@ -1,3 +1,8 @@
+#Requires -PSEdition Core -RunAsAdministrator
+#([Security.Principal.WindowsPrincipal] `
+#  [Security.Principal.WindowsIdentity]::GetCurrent() `
+#).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
 function Add-ToEnvironmentVariable {
   param(
     [string]$HKEY_Path,
