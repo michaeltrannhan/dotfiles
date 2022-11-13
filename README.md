@@ -14,6 +14,7 @@ Use at your own risk!
 
 Suggestions/improvements are [welcome and encouraged](https://github.com/hoang-himself/dotfiles/issues)!
 
+<!--
 ## FAQ/Notes to self
 
 ### `git commit --gpg-sign` raises `gpg: No secret key` on Windows
@@ -55,3 +56,4 @@ Assume that the escape character is `~`: `~C-L 8000:localhost:9000`.
 Settings in the "top" level can’t be overridden, whereas settings in `Host *` will be overridden by any setting defined before that section (in the "top" level, or in a section matching the target host).
 
 The "top" level should be used for settings which shouldn’t be overridden, and the `Host *` section, which should come last, should be used for default settings.
+-->
