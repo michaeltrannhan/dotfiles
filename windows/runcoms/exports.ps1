@@ -16,4 +16,4 @@ $env:XDG_STATE_HOME = "$env:USERPROFILE\.local\state"
 $env:XDG_BIN_HOME = "$env:USERPROFILE\.local\bin"
 
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_preference_variables
-#$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'Continue'

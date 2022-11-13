@@ -287,3 +287,5 @@ $args | ForEach-Object -Process {
     default { Write-Output -InputObject "Unrecognized option `"$_`"" }
   }
 }
+
+$ErrorActionPreference = 'Continue'
