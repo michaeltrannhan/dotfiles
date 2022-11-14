@@ -53,7 +53,7 @@ function ssh-hostgen {
     throw [System.ArgumentException] 'invalid port'
   }
   $u = $args[4]
-  $keygen_param = @('-f', "$HOME/.ssh/id.d/$($args[0])_$h", '-C', "$u@$hostname")
+  $keygen_param += @('-f', "$HOME/.ssh/id.d/$($args[0])_$h", '-C', "$u@$hostname")
 
   ssh-keygen @keygen_param
 
