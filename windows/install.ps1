@@ -62,8 +62,8 @@ New-Item -ItemType Directory -Path "$PROFILE_HOME" -Force
 New-Item -ItemType Directory -Path "$PROFILE_HOME\profile.d" -Force
 
 function Install-Base {
-  Add-AppxPackage -Path 'https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
-  Add-ToUserPath -Path '%USERPROFILE%\AppData\Local\Microsoft\WindowsApps'
+  #Add-AppxPackage -Path 'https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
+  #Add-ToUserPath -Path '%LOCALAPPDATA%\Microsoft\WindowsApps'
   Get-PackageProvider | Where-Object -Property Name -EQ 'NuGet' | Install-PackageProvider -Force
   Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
   Update-Module -Force
