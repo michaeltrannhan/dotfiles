@@ -253,14 +253,10 @@ function Install-VSCodeServer {
     default { Write-Output -InputObject "Unsupported architecture `"$env:PROCESSOR_ARCHITECTURE`""; return }
   }
 
-  New-Item -Path "$HOME\.vscode-server-launcher\bin" -ItemType Directory -Force
+  New-Item -Path "$env:USERPROFILE\.vscode-server-launcher\bin" -ItemType Directory -Force
   Invoke-WebRequest -Uri "https://aka.ms/vscode-server-launcher/${arch}-pc-windows-msvc" `
     -OutFile "$HOME\.vscode-server-launcher\bin\code-server.exe"
-  [Environment]::SetEnvironmentVariable(
-    'Path',
-    [Environment]::GetEnvironmentVariable('Path', 'User') + ";$HOME\.vscode-server-launcher\bin",
-    'User'
-  )
+  Add-ToUserEnvironment -Path '%USERPROFILE%\.vscode-server-launcher\bin'
 }
 
 function main {
