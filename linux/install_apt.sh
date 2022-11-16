@@ -6,7 +6,7 @@ function install_base {
   sudo apt full-upgrade -y
   sudo apt install -y git git-lfs less neovim make curl wget rsync \
     openssl acl gnupg dos2unix cron shellcheck \
-    openssh-server openssh-client buildah podman skopeo
+    buildah podman skopeo openssh-client #openssh-server
   sudo apt autoremove -y
 }
 

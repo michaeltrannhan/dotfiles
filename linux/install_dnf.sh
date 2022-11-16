@@ -5,7 +5,7 @@ function install_base {
   sudo dnf upgrade -y
   sudo dnf install -y git git-lfs less neovim make curl wget rsync \
     openssl acl gnupg dos2unix crontabs ShellCheck \
-    openssh-server openssh-clients buildah podman skopeo
+    buildah podman skopeo openssh-clients #openssh-server
   sudo dnf autoremove -y
 }
 
