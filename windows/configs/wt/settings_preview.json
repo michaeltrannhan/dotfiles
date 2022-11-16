@@ -46,16 +46,15 @@
     },
     "list": [
       {
-        "guid": "{a3a2e83a-884a-5379-baa8-16f193a13b21}",
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
         "hidden": false,
-        "name": "PowerShell 7 Preview",
-        "source": "Windows.Terminal.PowershellCore"
+        "name": "Windows PowerShell"
       },
       {
-        "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+        "commandline": "%SystemRoot%\\System32\\cmd.exe",
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
         "hidden": false,
-        "name": "Git Bash",
-        "source": "Git"
+        "name": "Command Prompt"
       },
       {
         "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
@@ -64,10 +63,10 @@
         "source": "Windows.Terminal.PowershellCore"
       },
       {
-        "commandline": "%SystemRoot%/System32/cmd.exe",
-        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "guid": "{a3a2e83a-884a-5379-baa8-16f193a13b21}",
         "hidden": false,
-        "name": "Command Prompt"
+        "name": "PowerShell 7 Preview",
+        "source": "Windows.Terminal.PowershellCore"
       },
       {
         "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -76,9 +75,10 @@
         "source": "Windows.Terminal.Azure"
       },
       {
-        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
         "hidden": false,
-        "name": "Windows PowerShell"
+        "name": "Git Bash",
+        "source": "Git"
       },
       {
         "guid": "{8ab8e6f6-35c6-5b46-8419-3e1568105476}",

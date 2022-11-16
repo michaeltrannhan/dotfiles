@@ -3,8 +3,8 @@
   "$schema": "https://aka.ms/terminal-profiles-schema",
   "actions": [
     {
-      "command": "find",
-      "keys": "ctrl+shift+f"
+      "command": "paste",
+      "keys": "ctrl+v"
     },
     {
       "command": {
@@ -14,8 +14,8 @@
       "keys": "ctrl+c"
     },
     {
-      "command": "paste",
-      "keys": "ctrl+v"
+      "command": "find",
+      "keys": "ctrl+shift+f"
     },
     {
       "command": {
@@ -33,7 +33,7 @@
   "profiles": {
     "defaults": {
       "antialiasingMode": "cleartype",
-      "backgroundImageOpacity": 0.10000000000000001,
+      "backgroundImageOpacity": 0.1,
       "bellStyle": "none",
       "colorScheme": "Banana Blueberry",
       "cursorShape": "filledBox",
@@ -46,7 +46,6 @@
     },
     "list": [
       {
-        "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
         "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
         "hidden": false,
         "name": "Windows PowerShell"
@@ -344,6 +343,7 @@
       "yellow": "#FEDE5D"
     }
   ],
+  "themes": [],
   "trimBlockSelection": true,
   "useAcrylicInTabRow": true
 }
