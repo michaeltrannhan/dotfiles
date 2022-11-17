@@ -14,6 +14,7 @@ function which($name) {
   Get-Command -Name $name -ErrorAction SilentlyContinue `
   | Select-Object -ExpandProperty Definition -ErrorAction SilentlyContinue
 }
+
 function touch($file) { '' | Out-File -FilePath $file -Encoding ASCII }
 
 function mkcd($path) { New-Item -ItemType Directory -Path $path && Set-Location -Path $path }
@@ -63,6 +64,9 @@ Host $h
   Port $p
   User $u
   IdentityFile ~/.ssh/id.d/$($args[0])_$h
+  IdentitiesOnly yes
+  #AddKeysToAgent yes
+  #ForwardAgent yes
 
 "@
 
