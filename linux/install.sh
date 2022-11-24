@@ -46,12 +46,22 @@ function set_pyenv {
 }
 
 function set_openssh {
-  # sudo mkdir -p '/etc/ssh/sshd_config.d'
-  # sudo mkdir -p "/etc/ssh/keys/$(whoami)"
+  sudo mkdir -p -m 700 '/etc/ssh/sshd_config.d'
+  sudo mkdir -p -m 700 "/etc/ssh/keys"
+  sudo mkdir -p -m 700 "/etc/ssh/keys/$(whoami)"
   mkdir -p "$HOME"/.ssh/{config.d,id.d,sockets}
 
-  # sudo ln -frs './configs/openssh/sshd_config' '/etc/ssh/sshd_config'
-  ln -frs './configs/openssh/ssh_config' "$HOME/.ssh/config"
+  for rc in ../shared/configs/sshd_config.d/*.conf; do
+    [[ -f "$rc" ]] && sudo ln -frs "$rc" "/etc/ssh/sshd_config.d/$(basename "$rc")"
+  done
+
+  if [[ -x "$(command -v apt)" ]]; then
+    sudo ln -frs './configs/sshd_config.d/10-debian.conf' '/etc/ssh/sshd_config.d/10-debian.conf'
+  elif [[ -x "$(command -v dnf)" ]]; then
+    sudo ln -frs './configs/sshd_config.d/10-redhat.conf' '/etc/ssh/sshd_config.d/10-redhat.conf'
+  fi
+
+  ln -frs './configs/ssh_config' "$HOME/.ssh/config"
 }
 
 function install_nvm {

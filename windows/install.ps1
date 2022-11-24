@@ -169,7 +169,6 @@ function Set-NVM {
 }
 
 function Install-OpenSSH {
-  # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse
   Add-WindowsCapability -Online -Name OpenSSH.Client
   Get-Service -Name 'ssh-agent' | Set-Service -StartupType Automatic -PassThru | Start-Service
 
@@ -179,14 +178,14 @@ function Install-OpenSSH {
   #Get-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' `
   #| Remove-NetFirewallRule
   #New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' `
-  #  -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 2255
+  #  -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 }
 
 function Set-OpenSSH {
   [CmdletBinding(SupportsShouldProcess)]
   param()
-  # New-Item -ItemType Directory -Path "$env:ProgramData\ssh\sshd_config.d" -Force
-  # New-Item -ItemType Directory -Path "$env:ProgramData\ssh\keys\$env:USERNAME" -Force
+  New-Item -ItemType Directory -Path "$env:ProgramData\ssh\sshd_config.d" -Force
+  New-Item -ItemType Directory -Path "$env:ProgramData\ssh\keys\$env:USERNAME" -Force
 
   @(
     'config.d',
@@ -195,15 +194,28 @@ function Set-OpenSSH {
     New-Item -ItemType Directory -Path "$env:USERPROFILE\.ssh\$_" -Force
   }
 
-  #New-Item -ItemType SymbolicLink `
-  #  -Path "$env:ProgramData\ssh\sshd_config" `
-  #  -Target $(Resolve-Path -LiteralPath '.\configs\openssh\sshd_config') -Force
+  New-Item -ItemType SymbolicLink `
+    -Path "$env:ProgramData\ssh\sshd_config" `
+    -Target $(Resolve-Path -LiteralPath '.\configs\sshd_config') -Force
+
+  Get-ChildItem -Path '..\shared\configs\sshd_config.d' | ForEach-Object -Process {
+    New-Item -ItemType SymbolicLink `
+      -Path "$env:ProgramData\ssh\sshd_config.d\$($_.Name)" `
+      -Target $_.FullName -Force
+  }
+
+  Get-ChildItem -Path '.\configs\sshd_config.d' | ForEach-Object -Process {
+    New-Item -ItemType SymbolicLink `
+      -Path "$env:ProgramData\ssh\sshd_config.d\$($_.Name)" `
+      -Target $_.FullName -Force
+  }
+
   New-Item -ItemType SymbolicLink `
     -Path "$env:USERPROFILE\.ssh\config" `
-    -Target $(Resolve-Path -LiteralPath '.\configs\openssh\ssh_config') -Force
+    -Target $(Resolve-Path -LiteralPath '.\configs\ssh_config') -Force
 
-  #New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -PropertyType String `
-  #  -Name 'DefaultShell' -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -Force
+  New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -PropertyType String `
+    -Name 'DefaultShell' -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -Force
 }
 
 function Install-WSL {
