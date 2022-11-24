@@ -10,7 +10,7 @@ Current Ventoy partition directory tree:
 │   │   ventoy.json
 │   │
 │   └───theme
-│       └───Tela
+│       └───tela
 │
 ├───injection
 │       windows.zip
@@ -18,5 +18,3 @@ Current Ventoy partition directory tree:
 └───iso
     └───WinNT10
 ```
-
-Current theme: [Tela](https://www.gnome-look.org/p/1307852/)
