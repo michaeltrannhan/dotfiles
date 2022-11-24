@@ -69,7 +69,6 @@ function set_nvm {
 }
 
 function set_git {
-  mkdir -p "$XDG_CONFIG_HOME/git"
   ln -frs "../shared/configs/git" "$XDG_CONFIG_HOME/git"
 }
 
