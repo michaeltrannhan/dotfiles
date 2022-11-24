@@ -1,14 +1,11 @@
 #Requires -PSEdition Core -RunAsAdministrator
-#([Security.Principal.WindowsPrincipal] `
-#  [Security.Principal.WindowsIdentity]::GetCurrent() `
-#).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-function Add-ToEnvironmentVariable {
+function Add-ToPathVariable {
   param(
-    [string]$HKEY_Path,
+    [string]$RegistryPath,
     [string]$Path
   )
-  $oldPath = (Get-Item -Path "$HKEY_Path").GetValue(
+  $oldPath = (Get-Item -Path "$RegistryPath").GetValue(
     'Path', # the registry-value name
     $null, # the default value to return if no such value exists.
     'DoNotExpandEnvironmentNames' # the option that suppresses expansion
@@ -16,26 +13,25 @@ function Add-ToEnvironmentVariable {
 
   if ($oldPath -ilike "*$Path*") { return }
 
-  Set-ItemProperty -Path "$HKEY_Path" -Name 'Path' `
-    -Value "$oldPath;$Path"
+  Set-ItemProperty -Path "$RegistryPath" -Name 'Path' -Value "$oldPath;$Path"
 
   #$tempPath = $Path.Split('%')
   #$pwshPath = '$env:' + -join $tempPath[1..$tempPath.count]
   #$env:Path = "$env:Path;$pwshPath"
 }
 
-function Add-ToSystemEnvironment {
+function Add-ToSystemPath {
   param(
     [string]$Path
   )
-  Add-ToEnvironmentVariable -HKEY_Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Path $Path
+  Add-ToPathVariable -RegistryPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Path $Path
 }
 
-function Add-ToUserEnvironment {
+function Add-ToUserPath {
   param(
     [string]$Path
   )
-  Add-ToEnvironmentVariable -HKEY_Path 'HKCU:\Environment' -Path $Path
+  Add-ToPathVariable -RegistryPath 'HKCU:\Environment' -Path $Path
 }
 
 $ErrorActionPreference = 'SilentlyContinue'
@@ -67,7 +63,7 @@ New-Item -ItemType Directory -Path "$PROFILE_HOME\profile.d" -Force
 
 function Install-Base {
   Add-AppxPackage -Path 'https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
-  Add-ToUserEnvironment -Path '%USERPROFILE%\AppData\Local\Microsoft\WindowsApps'
+  Add-ToUserPath -Path '%USERPROFILE%\AppData\Local\Microsoft\WindowsApps'
   Get-PackageProvider | Where-Object -Property Name -EQ 'NuGet' | Install-PackageProvider -Force
   Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
   Update-Module -Force
@@ -134,8 +130,8 @@ function Install-Pyenv {
   Set-ItemProperty -Path 'HKCU:\Environment' -Name 'PYENV_HOME' `
     -Value '%USERPROFILE%\.pyenv\pyenv-win'
 
-  Add-ToUserEnvironment -Path '%USERPROFILE%\.pyenv\pyenv-win\bin'
-  Add-ToUserEnvironment -Path '%USERPROFILE%\.pyenv\pyenv-win\shims'
+  Add-ToUserPath -Path '%USERPROFILE%\.pyenv\pyenv-win\bin'
+  Add-ToUserPath -Path '%USERPROFILE%\.pyenv\pyenv-win\shims'
 }
 
 function Set-Pyenv {
@@ -258,7 +254,7 @@ function Install-VSCodeServer {
   New-Item -Path "$env:USERPROFILE\.vscode-server-launcher\bin" -ItemType Directory -Force
   Invoke-WebRequest -Uri "https://aka.ms/vscode-server-launcher/${arch}-pc-windows-msvc" `
     -OutFile "$HOME\.vscode-server-launcher\bin\code-server.exe"
-  Add-ToUserEnvironment -Path '%USERPROFILE%\.vscode-server-launcher\bin'
+  Add-ToUserPath -Path '%USERPROFILE%\.vscode-server-launcher\bin'
 }
 
 function main {

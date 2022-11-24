@@ -5,11 +5,6 @@ Invoke-Command -ScriptBlock $([ScriptBlock]::Create(
     $(starship init powershell)
   ))
 
-$MaximumHistoryCount = 1024
-Set-PSReadLineOption -MaximumHistoryCount $MaximumHistoryCount
-Set-PSReadLineOption -BellStyle None
-Set-PSReadLineOption -ShowToolTips
-
 function Invoke-Starship-PreCommand {
   $loc = $($executionContext.SessionState.Path.CurrentLocation);
   $prompt = "$([char]27)]9;12$([char]7)"
