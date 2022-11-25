@@ -1,13 +1,16 @@
 function sudo() {
-  if ($args.count -eq 0) {
-    Start-Process -FilePath 'pwsh' -Verb 'RunAs'
+  $Params = @{
+    'FilePath'         = 'pwsh'
+    'Verb'             = 'RunAs'
+    'WorkingDirectory' = Get-Location
   }
-  elseif ($args.count -eq 1) {
-    Start-Process -FilePath $args[0] -Verb 'RunAs'
+  if ($args.count -gt 0) {
+    $Params['FilePath'] = $args[0]
   }
-  else {
-    Start-Process -FilePath $args[0] -Verb 'RunAs' -ArgumentList $args[1..$args.count]
+  if ($args.count -gt 1) {
+    $Params['ArgumentList'] = $args[1..($args.count - 1)]
   }
+  Start-Process @Params
 }
 
 function which($name) {
