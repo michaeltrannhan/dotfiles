@@ -2,6 +2,7 @@
 
 function install_base {
   sudo dnf install -y dnf-plugins-core util-linux-user
+  sudo dnf upgrade --refresh
   sudo dnf upgrade -y
   sudo dnf install -y git git-lfs less neovim make curl wget rsync \
     openssl acl gnupg dos2unix crontabs ShellCheck \
