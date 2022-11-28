@@ -1,14 +1,48 @@
 # We wrap in a local function instead of exporting the variable directly in
 # order to avoid interfering with manually-run git commands by the user.
 function __git_prompt_git {
-  $tmp = $env:GIT_OPTIONAL_LOCKS
-  $env:GIT_OPTIONAL_LOCKS = 0
-  git $args
-  $env:GIT_OPTIONAL_LOCKS = $tmp
+  git --no-optional-locks $args
 }
 
+# Outputs the name of the current branch
+# Usage example: git pull origin $(git_current_branch)
+# Using '--quiet' with 'symbolic-ref' will not cause a fatal error (128) if
+# it's not a symbolic ref, but in a Git repo.
 function git_current_branch {
   git branch --show-current
+}
+
+# Outputs the name of the current user
+# Usage example: $(git_current_user_name)
+function git_current_user_name {
+  __git_prompt_git config user.name 2>$null
+}
+
+# Outputs the email of the current user
+# Usage example: $(git_current_user_email)
+function git_current_user_email {
+  __git_prompt_git config user.email 2>$null
+}
+
+# Output the name of the root directory of the git repository
+# Usage example: $(git_repo_name)
+function git_repo_name {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectUsageOfRedirectionOperator', '')]
+  param()
+  if ($repo_path = $(__git_prompt_git rev-parse --show-toplevel 2>$null)) {
+    Write-Output -InputObject $repo_path.Split('/')[-1]
+  }
+}
+
+function current_branch {
+  git_current_branch
+}
+
+# Pretty log messages
+function _git_log_prettily {
+  if ($args[0]) {
+    git log --pretty=$args[0]
+  }
 }
 
 # Warn if the current branch is a WIP
@@ -59,11 +93,11 @@ ${function:gapt} = { git apply --3way $args }
 ${function:gb} = { git branch $args }
 ${function:gba} = { git branch -a $args }
 ${function:gbd} = { git branch -d $args }
+${function:gbda} = { git branch -d @(git branch --no-color --merged | Select-String -NotMatch -Pattern "$(git_main_branch)|$(git_develop_branch)" | ForEach-Object -Process { $_.Line.Trim() }) }
 ${function:gbD} = { git branch -D $args }
 ${function:gbl} = { git blame -b -w $args }
 ${function:gbnm} = { git branch --no-merged $args }
 ${function:gbr} = { git branch --remote $args }
-
 ${function:gbs} = { git bisect $args }
 ${function:gbsb} = { git bisect bad $args }
 ${function:gbsg} = { git bisect good $args }
@@ -72,6 +106,7 @@ ${function:gbss} = { git bisect start $args }
 
 ${function:gc} = { git commit -v $args }
 ${function:gc!} = { git commit -v --amend $args }
+${function:gcn} = { git commit -v --no-edit $args }
 ${function:gcn!} = { git commit -v --no-edit --amend $args }
 ${function:gca} = { git commit -v -a $args }
 ${function:gca!} = { git commit -v -a --amend $args }
@@ -82,7 +117,17 @@ ${function:gcsm} = { git commit -s -m $args }
 ${function:gcas} = { git commit -a -s $args }
 ${function:gcasm} = { git commit -a -s -m $args }
 ${function:gcb} = { git checkout -b $args }
-${function:gcf} = { git config -l $args }
+${function:gcf} = { git config --list $args }
+
+function gccd {
+  git clone --recurse-submodules $args
+  if (Test-Path -Path $args) {
+    Set-Location -Path $args
+  }
+  else {
+    Set-Location -Path $args.Split('/')[-1]
+  }
+}
 
 ${function:gcl} = { git clone --recurse-submodules $args }
 ${function:gclean} = { git clean -id $args }
@@ -109,6 +154,12 @@ ${function:gdt} = { git diff-tree --no-commit-id --name-only -r $args }
 ${function:gdup} = { git diff '@{upstream}' $args }
 ${function:gdw} = { git diff --word-diff $args }
 
+function gdnolock {
+  git diff $args ':(exclude)package-lock.json' ':(exclude)*.lock'
+}
+
+function gdv { git diff -w $args | & $env:EDITOR -R - }
+
 ${function:gf} = { git fetch $args }
 ${function:gfa} = { git fetch --all --prune --jobs=10 $args }
 ${function:gfo} = { git fetch origin $args }
@@ -118,16 +169,62 @@ ${function:gfg} = { git ls-files | Select-String -Pattern $args }
 ${function:gg} = { git gui citool $args }
 ${function:gga} = { git gui citool --amend $args }
 
+function ggf {
+  $b = if ($args.count -ne 1) { git_current_branch } else { $args[0] }
+  git push --force origin "$b"
+}
+
+function ggfl {
+  $b = if ($args.count -ne 1) { git_current_branch } else { $args[0] }
+  git push --force-with-lease origin "$b"
+}
+
+function ggl {
+  if (($args.count -ne 0) -and ($args.count -ne 1)) {
+    git pull origin $args
+  }
+  else {
+    $b = if ($args.count -eq 0) { git_current_branch } else { $args[0] }
+    git pull origin "$b"
+  }
+}
+
+function ggp {
+  if (($args.count -ne 0) -and ($args.count -ne 1)) {
+    git push origin $args
+  }
+  else {
+    $b = if ($args.count -eq 0) { git_current_branch } else { $args[0] }
+    git push origin "$b"
+  }
+}
+
+function ggpnp {
+  if ($args.count -eq 0) {
+    ggl && ggp
+  }
+  else {
+    ggl $args && ggp $args
+  }
+}
+
+function ggu {
+  $b = if ($args.count -ne 1) { git_current_branch } else { $args[0] }
+  git pull --rebase origin "$b"
+}
+
+${function:ggpur} = { ggu $args }
 ${function:ggpull} = { git pull origin $(git_current_branch) $args }
 ${function:ggpush} = { git push origin $(git_current_branch) $args }
 
-${function:ggsup} = { git branch --set-upstream-to=origin/$(git_current_branch) $args }
+${function:ggsup} = { git branch --set-upstream-to="origin/$(git_current_branch)" $args }
 ${function:gpsup} = { git push --set-upstream origin $(git_current_branch) $args }
 
 ${function:ghh} = { git help $args }
 
 ${function:gignore} = { git update-index --assume-unchanged $args }
 ${function:gignored} = { git ls-files -v | Select-String -CaseSensitive -Pattern '^[a-z].*$' }
+${function:gsdp} = { git svn dcommit && git push github "$(git_main_branch):svntrunk" }
 
 ${function:gk} = { gitk --all --branches $args }
 ${function:gke} = { gitk --all $(git log -g --pretty=%h) $args }
@@ -146,11 +243,14 @@ ${function:glods} = { git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Crese
 ${function:glola} = { git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all $args }
 ${function:glog} = { git log --oneline --decorate --graph $args }
 ${function:gloga} = { git log --oneline --decorate --graph --all $args }
+${function:glp} = { _git_log_prettily $args }
 
 ${function:gm} = { git merge $args }
-${function:gmom} = { git merge origin/$(git_main_branch) $args }
-${function:gmum} = { git merge upstream/$(git_main_branch) $args }
-${function:gma} = { git merge --abort $args }
+${function:gmom} = { git merge "origin/$(git_main_branch)" $args }
+${function:gmtl} = { git mergetool --no-prompt $args }
+${function:gmtlvim} = { git mergetool --no-prompt --tool='nvim -d' $args }
+${function:gmum} = { git merge "upstream/$(git_main_branch)" $args }
+${function:gma} = { git merge --abort }
 
 ${function:gp} = { git push $args }
 ${function:gpd} = { git push --dry-run $args }
@@ -164,18 +264,18 @@ ${function:gpv} = { git push -v $args }
 ${function:gr} = { git remote $args }
 ${function:gra} = { git remote add $args }
 ${function:grb} = { git rebase $args }
-${function:grba} = { git rebase --abort $args }
-${function:grbc} = { git rebase --continue $args }
+${function:grba} = { git rebase --abort }
+${function:grbc} = { git rebase --continue }
 ${function:grbd} = { git rebase $(git_develop_branch) $args }
 ${function:grbi} = { git rebase -i $args }
 ${function:grbm} = { git rebase $(git_main_branch) $args }
-${function:grbom} = { git rebase origin/$(git_main_branch) $args }
+${function:grbom} = { git rebase "origin/$(git_main_branch)" $args }
 ${function:grbo} = { git rebase --onto $args }
-${function:grbs} = { git rebase --skip $args }
+${function:grbs} = { git rebase --skip }
 ${function:grev} = { git revert $args }
 ${function:grh} = { git reset $args }
 ${function:grhh} = { git reset --hard $args }
-${function:groh} = { git reset origin/$(git_current_branch) --hard $args }
+${function:groh} = { git reset "origin/$(git_current_branch)" --hard $args }
 ${function:grm} = { git rm $args }
 ${function:grmc} = { git rm --cached $args }
 ${function:grmv} = { git remote rename $args }
@@ -185,15 +285,16 @@ ${function:grset} = { git remote set-url $args }
 ${function:grss} = { git restore --source $args }
 ${function:grst} = { git restore --staged $args }
 ${function:grt} = { Set-Location $(git rev-parse --show-toplevel) }
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_special_characters#stop-parsing-token---
-${function:gru} = { git reset -- $args } # --%
+${function:gru} = { git reset -- $args }
 ${function:grup} = { git remote update $args }
 ${function:grv} = { git remote -v $args }
 
 ${function:gsb} = { git status -sb $args }
+${function:gsd} = { git svn dcommit $args }
 ${function:gsh} = { git show $args }
 ${function:gsi} = { git submodule init $args }
 ${function:gsps} = { git show --pretty=short --show-signature $args }
+${function:gsr} = { git svn rebase $args }
 ${function:gss} = { git status -s $args }
 ${function:gst} = { git status $args }
 
@@ -222,16 +323,24 @@ ${function:gup} = { git pull --rebase $args }
 ${function:gupv} = { git pull --rebase -v $args }
 ${function:gupa} = { git pull --rebase --autostash $args }
 ${function:gupav} = { git pull --rebase --autostash -v $args }
+${function:gupom} = { git pull --rebase origin $(git_main_branch) $args }
+${function:gupomi} = { git pull --rebase=interactive origin $(git_main_branch) $args }
 ${function:glum} = { git pull upstream $(git_main_branch) $args }
 ${function:gluc} = { git pull upstream $(git_current_branch) $args }
 
 ${function:gwch} = { git whatchanged -p --abbrev-commit --pretty=medium $args }
 ${function:gwip} = { git add -A; git rm $(git ls-files --deleted) 2>&1 | Out-Null; git commit --no-verify --no-gpg-sign -m '--wip-- [skip ci]' }
 
+${function:gwt} = { git worktree $args }
+${function:gwta} = { git worktree add $args }
+${function:gwtls} = { git worktree list $args }
+${function:gwtmv} = { git worktree move $args }
+${function:gwtrm} = { git worktree remove $args }
+
 ${function:gam} = { git am $args }
-${function:gamc} = { git am --continue $args }
-${function:gams} = { git am --skip $args }
-${function:gama} = { git am --abort $args }
+${function:gamc} = { git am --continue }
+${function:gams} = { git am --skip }
+${function:gama} = { git am --abort }
 ${function:gamscp} = { git am --show-current-patch $args }
 
 function grename {
