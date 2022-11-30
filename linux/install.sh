@@ -54,12 +54,9 @@ function set_openssh {
   for rc in ../shared/configs/sshd_config.d/*.conf; do
     [[ -f "$rc" ]] && sudo ln -frs "$rc" "/etc/ssh/sshd_config.d/$(basename "$rc")"
   done
-
-  if [[ -x "$(command -v apt)" ]]; then
-    sudo ln -frs './configs/sshd_config.d/10-debian.conf' '/etc/ssh/sshd_config.d/10-debian.conf'
-  elif [[ -x "$(command -v dnf)" ]]; then
-    sudo ln -frs './configs/sshd_config.d/10-redhat.conf' '/etc/ssh/sshd_config.d/10-redhat.conf'
-  fi
+  for rc in ../shared/configs/ssh_config.d/*.conf; do
+    [[ -f "$rc" ]] && sudo ln -frs "$rc" "/etc/ssh/ssh_config.d/$(basename "$rc")"
+  done
 
   ln -frs './configs/ssh_config' "$HOME/.ssh/config"
 }

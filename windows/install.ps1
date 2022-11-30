@@ -203,10 +203,9 @@ function Set-OpenSSH {
       -Path "$env:ProgramData\ssh\sshd_config.d\$($_.Name)" `
       -Target $_.FullName -Force
   }
-
-  Get-ChildItem -Path '.\configs\sshd_config.d' | ForEach-Object -Process {
+  Get-ChildItem -Path '..\shared\configs\ssh_config.d' | ForEach-Object -Process {
     New-Item -ItemType SymbolicLink `
-      -Path "$env:ProgramData\ssh\sshd_config.d\$($_.Name)" `
+      -Path "$env:ProgramData\ssh\ssh_config.d\$($_.Name)" `
       -Target $_.FullName -Force
   }
 
