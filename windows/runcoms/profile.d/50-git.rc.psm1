@@ -93,7 +93,13 @@ ${function:gapt} = { git apply --3way $args }
 ${function:gb} = { git branch $args }
 ${function:gba} = { git branch -a $args }
 ${function:gbd} = { git branch -d $args }
-${function:gbda} = { git branch -d @(git branch --no-color --merged | Select-String -NotMatch -Pattern "$(git_main_branch)|$(git_develop_branch)" | ForEach-Object -Process { $_.Line.Trim() }) }
+${function:gbda} = {
+  git branch -d @(
+    git branch --no-color --merged `
+    | Select-String -NotMatch -Pattern "^([+*]|\s*($(git_main_branch)|$(git_develop_branch))\s*$)" `
+    | ForEach-Object -Process { $_.Line.Trim() }
+  )
+}
 ${function:gbD} = { git branch -D $args }
 ${function:gbl} = { git blame -b -w $args }
 ${function:gbnm} = { git branch --no-merged $args }
