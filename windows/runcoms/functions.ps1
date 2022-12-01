@@ -126,7 +126,7 @@ function Remove-TemporaryFolder {
   Remove-Item -Path $TMPDIR -Recurse -Force
 }
 
-function Add-ToEnvironmentVariable {
+function Add-ToPathVariable {
   param(
     [string]$HKEY_Path,
     [string]$Path
@@ -147,18 +147,18 @@ function Add-ToEnvironmentVariable {
   #$env:Path = "$env:Path;$pwshPath"
 }
 
-function Add-ToSystemEnvironment {
+function Add-ToSystemPath {
   param(
     [string]$Path
   )
-  Add-ToEnvironmentVariable -HKEY_Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Path $Path
+  Add-ToPathVariable -HKEY_Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Path $Path
 }
 
-function Add-ToUserEnvironment {
+function Add-ToUserPath {
   param(
     [string]$Path
   )
-  Add-ToEnvironmentVariable -HKEY_Path 'HKCU:\Environment' -Path $Path
+  Add-ToPathVariable -HKEY_Path 'HKCU:\Environment' -Path $Path
 }
 
 function Clear-GlobalHistory {
