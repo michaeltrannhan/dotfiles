@@ -50,7 +50,7 @@ insert_final_newline = true
 [*.{bat,cmd}]
 end_of_line = crlf
 
-[*.{md,py}]
+[*.{fs,md,py}]
 indent_size = 4
 
 [*.json]
