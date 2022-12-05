@@ -8,3 +8,49 @@ alias ls='ls --color=auto --group-directories-first -v'
 alias rr='rm -rf'
 alias now='date +"%T"'
 alias week='date +%V'
+
+function set-formatting {
+  editorconfig=$(
+    cat <<EOF
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{bat,cmd}]
+end_of_line = crlf
+
+[*.{md,py}]
+indent_size = 4
+
+[*.json]
+insert_final_newline = false
+
+EOF
+  )
+
+  if [[ -f '.editorconfig' ]]; then
+    echo "$editorconfig"
+  else
+    echo "$editorconfig" >.editorconfig
+  fi
+}
+
+function create-tmp {
+  pushd "$(mktemp -d)" || exit 1
+}
+
+function clear-tmp {
+  TMPDIR=$PWD
+  popd || exit 1
+  command rm -rf "$TMPDIR"
+}
+
+function clear-history {
+  echo '' >"$HISTFILE"
+}
