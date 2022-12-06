@@ -7,7 +7,6 @@ vim.wo.relativenumber = true
 vim.opt.scrolloff = 4
 
 vim.opt.title = true
-vim.opt.hlsearch = true
 vim.opt.backspace = { 'start', 'eol', 'indent' }
 
 vim.opt.wrap = true
@@ -19,6 +18,7 @@ vim.opt.textwidth = 79
 vim.opt.ignorecase = true -- unless searched with /C or capital
 vim.opt.smartcase = true
 vim.opt.incsearch = true
+vim.opt.hlsearch = true
 vim.opt.inccommand = 'split'
 
 vim.opt.splitbelow = true
@@ -40,7 +40,6 @@ vim.opt.laststatus = 2
 
 vim.opt.backup = false
 vim.opt.undofile = true
-
 
 vim.opt.path:append { '**' } -- also search files in subdirs
 vim.opt.wildignore:append { '*/.git/*', '*/node_modules/*' }

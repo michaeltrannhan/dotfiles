@@ -7,6 +7,7 @@ vim.opt.background = 'dark'
 
 vim.opt.cursorline = true
 vim.opt.colorcolumn = { 72, 79 }
+vim.api.nvim_set_hl(0, 'ColorColumn', { ctermbg=1, bg='#1488DB' })
 
 local init_lua_augroup = 'init_lua_augroup'
 local function on_ft(ft, cb)
