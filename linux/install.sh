@@ -85,10 +85,6 @@ function set_neovim {
   ln -frs "../shared/configs/neovim" "$XDG_CONFIG_HOME/nvim"
 }
 
-function install_vscode_server {
-  wget -O- https://aka.ms/install-vscode-server/setup.sh | sh
-}
-
 function main {
   install_base
   install_prompt

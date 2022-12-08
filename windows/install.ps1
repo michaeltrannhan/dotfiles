@@ -255,19 +255,6 @@ function Set-Neovim {
     -Target $(Resolve-Path -LiteralPath '..\shared\configs\neovim') -Force
 }
 
-function Install-VSCodeServer {
-  switch ($env:PROCESSOR_ARCHITECTURE) {
-    'AMD64' { $arch = 'x86_64' }
-    'ARM64' { $arch = 'aarch64' }
-    default { Write-Output -InputObject "Unsupported architecture `"$env:PROCESSOR_ARCHITECTURE`""; return }
-  }
-
-  New-Item -Path "$env:USERPROFILE\.vscode-server-launcher\bin" -ItemType Directory -Force
-  Invoke-WebRequest -Uri "https://aka.ms/vscode-server-launcher/${arch}-pc-windows-msvc" `
-    -OutFile "$HOME\.vscode-server-launcher\bin\code-server.exe"
-  Add-ToUserPath -Path '%USERPROFILE%\.vscode-server-launcher\bin'
-}
-
 function main {
   Install-Base
   Install-OpenSSH
