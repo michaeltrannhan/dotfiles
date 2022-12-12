@@ -1,10 +1,20 @@
 #Requires -PSEdition Core -RunAsAdministrator
 
-function Add-ToPathVariable {
+function Add-ToUserEnvironment {
   param(
-    [string]$RegistryPath,
+    [string]$Name,
+    [string]$Value
+  )
+  $RegistryPath = 'HKCU:\Environment'
+  New-ItemProperty -Path "$RegistryPath" -Name "$Name" -Value "$Value" -PropertyType 'ExpandString' -Force
+}
+
+function Add-ToUserPath {
+  param(
     [string]$Path
   )
+  $RegistryPath = 'HKCU:\Environment'
+
   $oldPath = (Get-Item -Path "$RegistryPath").GetValue(
     'Path', # the registry-value name
     $null, # the default value to return if no such value exists.
@@ -13,25 +23,11 @@ function Add-ToPathVariable {
 
   if ($oldPath -ilike "*$Path*") { return }
 
-  Set-ItemProperty -Path "$RegistryPath" -Name 'Path' -Value "$oldPath;$Path"
+  Set-ItemProperty -Path "$RegistryPath" -Name 'Path' -Value "$oldPath;$Path" -Force
 
   #$tempPath = $Path.Split('%')
   #$pwshPath = '$env:' + -join $tempPath[1..$tempPath.count]
   #$env:Path = "$env:Path;$pwshPath"
-}
-
-function Add-ToSystemPath {
-  param(
-    [string]$Path
-  )
-  Add-ToPathVariable -RegistryPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Path $Path
-}
-
-function Add-ToUserPath {
-  param(
-    [string]$Path
-  )
-  Add-ToPathVariable -RegistryPath 'HKCU:\Environment' -Path $Path
 }
 
 $ErrorActionPreference = 'SilentlyContinue'
@@ -51,15 +47,22 @@ $ErrorActionPreference = 'SilentlyContinue'
   New-Item -Path "$env:USERPROFILE\.local\$_" -ItemType Directory -Force
 }
 
-$PROFILE_HOME = Split-Path -Parent $Profile
-$env:XDG_CONFIG_HOME = if ("$env:XDG_CONFIG_HOME") { "$env:XDG_CONFIG_HOME" } else { "$env:USERPROFILE\.config" }
-$env:XDG_CACHE_HOME = if ("$env:XDG_CACHE_HOME") { "$env:XDG_CACHE_HOME" } else { "$env:USERPROFILE\.cache" }
-$env:XDG_DATA_HOME = if ("$env:XDG_DATA_HOME") { "$env:XDG_DATA_HOME" } else { "$env:USERPROFILE\.local\share" }
-$env:XDG_STATE_HOME = if ("$env:XDG_STATE_HOME") { "$env:XDG_STATE_HOME" } else { "$env:USERPROFILE\.local\state" }
-$env:XDG_BIN_HOME = if ("$env:XDG_BIN_HOME") { "$env:XDG_BIN_HOME" } else { "$env:USERPROFILE\.local\bin" }
+# TODO test then set
+$env:XDG_CONFIG_HOME = "$env:USERPROFILE\.config"
+$env:XDG_CACHE_HOME = "$env:USERPROFILE\.cache"
+$env:XDG_DATA_HOME = "$env:USERPROFILE\.local\share"
+$env:XDG_STATE_HOME = "$env:USERPROFILE\.local\state"
+$env:XDG_BIN_HOME = "$env:USERPROFILE\.local\bin"
 
-New-Item -ItemType Directory -Path "$PROFILE_HOME" -Force
-New-Item -ItemType Directory -Path "$PROFILE_HOME\profile.d" -Force
+@(
+  @('XDG_CONFIG_HOME', '%USERPROFILE%\.config'),
+  @('XDG_CACHE_HOME', '%USERPROFILE%\.cache'),
+  @('XDG_DATA_HOME', '%USERPROFILE%\.local\share'),
+  @('XDG_STATE_HOME', '%USERPROFILE%\.local\state'),
+  @('XDG_BIN_HOME', '%USERPROFILE%\.local\bin')
+) | ForEach-Object -Process {
+  Add-ToUserEnvironment -Name $_[0] -Value $_[1]
+}
 
 function Install-Base {
   #Add-AppxPackage -Path 'https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'
@@ -97,6 +100,19 @@ function Install-Prompt {
 function Set-RunCom {
   [CmdletBinding(SupportsShouldProcess)]
   param()
+  @(
+    @('EDITOR', 'nvim'),
+    @('VISUAL', 'nvim'),
+    @('PAGER', 'less')
+  ) | ForEach-Object -Process {
+    Add-ToUserEnvironment -Name $_[0] -Value $_[1]
+  }
+
+  $PROFILE_HOME = Split-Path -Parent $Profile
+
+  New-Item -ItemType Directory -Path "$PROFILE_HOME" -Force
+  New-Item -ItemType Directory -Path "$PROFILE_HOME\profile.d" -Force
+
   # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles
   @(
     @('', ''),
@@ -140,14 +156,12 @@ function Set-Pyenv {
     [Parameter(ValueFromRemainingArguments = $true)]
     $pythonTarget = '3.11.1'
   )
-  $env:PYENV = "$env:USERPROFILE\.pyenv\pyenv-win"
-  $env:PYENV_HOME = "$env:PYENV"
-  $env:PYENV_ROOT = "$env:PYENV"
-  Start-Process -FilePath "$env:PYENV\bin\pyenv" `
-    -ArgumentList @('install', $pythonTarget, '-q') -Wait
-  Start-Process -FilePath "$env:PYENV\bin\pyenv" `
-    -ArgumentList @('global', $pythonTarget) -Wait
-  Start-Process -FilePath "$env:PYENV\versions\$pythonTarget\python.exe" `
+  $PYENV = "$env:USERPROFILE\.pyenv\pyenv-win"
+  Start-Process -FilePath "$PYENV\bin\pyenv" `
+    -ArgumentList @('install', "$pythonTarget", '-q') -Wait
+  Start-Process -FilePath "$PYENV\bin\pyenv" `
+    -ArgumentList @('global', "$pythonTarget") -Wait
+  Start-Process -FilePath "$PYENV\versions\$pythonTarget\python.exe" `
     -ArgumentList @('-m', 'pip', 'install', '--upgrade', 'pip', 'setuptools', 'wheel') -Wait
 }
 
@@ -158,13 +172,12 @@ function Install-NVM {
 function Set-NVM {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
   param()
-  $env:NVM_HOME = "$env:APPDATA\nvm"
-  $env:NVM_SYMLINK = "$env:ProgramFiles\nodejs"
-  Start-Process -FilePath "$env:NVM_HOME\nvm.exe" `
+  $NVM_HOME = "$env:APPDATA\nvm"
+  Start-Process -FilePath "$NVM_HOME\nvm.exe" `
     -ArgumentList @('install', 'latest') -Wait
-  Start-Process -FilePath "$env:NVM_HOME\nvm.exe" `
+  Start-Process -FilePath "$NVM_HOME\nvm.exe" `
     -ArgumentList @('use', 'latest') -Wait
-  Start-Process -FilePath "$env:NVM_HOME\nvm.exe" `
+  Start-Process -FilePath "$NVM_HOME\nvm.exe" `
     -ArgumentList 'on' -Wait
 }
 

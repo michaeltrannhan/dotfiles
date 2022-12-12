@@ -52,38 +52,3 @@ Host $h
   Get-Acl -Path "$HOME/.ssh/id.d/$($args[0])_$h" `
   | Set-Acl -Path "$HOME/.ssh/config.d/$hostname.conf"
 }
-
-function Add-ToPathVariable {
-  param(
-    [string]$HKEY_Path,
-    [string]$Path
-  )
-  $oldPath = (Get-Item -Path "$HKEY_Path").GetValue(
-    'Path', # the registry-value name
-    $null, # the default value to return if no such value exists.
-    'DoNotExpandEnvironmentNames' # the option that suppresses expansion
-  )
-
-  if ($oldPath -ilike "*$Path*") { return }
-
-  Set-ItemProperty -Path "$HKEY_Path" -Name 'Path' `
-    -Value "$oldPath;$Path"
-
-  #$tempPath = $Path.Split('%')
-  #$pwshPath = '$env:' + -join $tempPath[1..$tempPath.count]
-  #$env:Path = "$env:Path;$pwshPath"
-}
-
-function Add-ToSystemPath {
-  param(
-    [string]$Path
-  )
-  Add-ToPathVariable -HKEY_Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' -Path $Path
-}
-
-function Add-ToUserPath {
-  param(
-    [string]$Path
-  )
-  Add-ToPathVariable -HKEY_Path 'HKCU:\Environment' -Path $Path
-}
