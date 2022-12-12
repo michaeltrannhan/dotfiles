@@ -39,7 +39,7 @@ function set_runcom {
 function set_pyenv {
   local python_target
   pyenv update
-  python_target=${1:-'3.11.0'}
+  python_target=${1:-'3.11.1'}
   pyenv install -s "$python_target"
   pyenv global "$python_target"
   pip install --upgrade pip setuptools wheel
@@ -90,8 +90,9 @@ function main {
   install_prompt
   install_pyenv
   install_nvm
+
   set_runcom
-  set_pyenv 3.11.0
+  set_pyenv 3.11.1
   set_nvm
   set_openssh
   set_git

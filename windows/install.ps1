@@ -138,7 +138,7 @@ function Set-Pyenv {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
   param(
     [Parameter(ValueFromRemainingArguments = $true)]
-    $pythonTarget = '3.11.0'
+    $pythonTarget = '3.11.1'
   )
   $env:PYENV = "$env:USERPROFILE\.pyenv\pyenv-win"
   $env:PYENV_HOME = "$env:PYENV"
@@ -262,8 +262,9 @@ function main {
   Install-Pyenv
   Install-NVM
   Install-WSL
+
   Set-RunCom
-  Set-Pyenv 3.11.0
+  Set-Pyenv 3.11.1
   Set-NVM
   Set-OpenSSH
   Set-WSL
