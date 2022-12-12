@@ -11,7 +11,8 @@ function Add-ToUserEnvironment {
 
 function Add-ToUserPath {
   param(
-    [string]$Path
+    [string]$Path,
+    [bool]$Prepend = $false
   )
   $RegistryPath = 'HKCU:\Environment'
 
@@ -23,11 +24,12 @@ function Add-ToUserPath {
 
   if ($oldPath -ilike "*$Path*") { return }
 
-  Set-ItemProperty -Path "$RegistryPath" -Name 'Path' -Value "$oldPath;$Path" -Force
-
-  #$tempPath = $Path.Split('%')
-  #$pwshPath = '$env:' + -join $tempPath[1..$tempPath.count]
-  #$env:Path = "$env:Path;$pwshPath"
+  if ($Prepend) {
+    Set-ItemProperty -Path "$RegistryPath" -Name 'Path' -Value "$Path;$oldPath" -Force
+  }
+  else {
+    Set-ItemProperty -Path "$RegistryPath" -Name 'Path' -Value "$oldPath;$Path" -Force
+  }
 }
 
 $ErrorActionPreference = 'SilentlyContinue'
@@ -107,6 +109,8 @@ function Set-RunCom {
   ) | ForEach-Object -Process {
     Add-ToUserEnvironment -Name $_[0] -Value $_[1]
   }
+
+  Add-ToUserPath -Path '%XDG_BIN_HOME%' -Prepend
 
   $PROFILE_HOME = Split-Path -Parent $Profile
 
