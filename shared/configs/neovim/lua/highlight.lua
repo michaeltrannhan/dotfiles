@@ -18,9 +18,11 @@ local function on_ft(ft, cb)
 end
 
 vim.api.nvim_create_augroup(init_lua_augroup, { clear = true })
+
 on_ft({'yaml', 'yml', 'python'}, function()
   vim.opt.cursorcolumn = true
 end)
+
 on_ft('gitcommit', function()
   vim.opt.colorcolumn = { 50, 72 }
 end)
