@@ -25,7 +25,7 @@ function set_runcom {
   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
   git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
 
-  ln -frs '../shared/configs/starship.toml' "$XDG_CONFIG_HOME/starship.toml"
+  ln -frs '../shared/runcoms/starship.toml' "$XDG_CONFIG_HOME/starship.toml"
 
   ln -frs './runcoms/zshenv' "$HOME/.zshenv"
   for rc in ./runcoms/*; do

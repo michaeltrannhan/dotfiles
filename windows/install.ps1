@@ -108,7 +108,7 @@ function Set-RunCom {
   }
 
   New-Item -ItemType SymbolicLink -Path "$env:XDG_CONFIG_HOME\starship.toml" `
-    -Target $(Resolve-Path -LiteralPath '..\shared\configs\starship.toml') -Force
+    -Target $(Resolve-Path -LiteralPath '..\shared\runcoms\starship.toml') -Force
 
   Get-ChildItem -Path '.\runcoms\*' -Include '*.ps1' | ForEach-Object -Process {
     New-Item -ItemType SymbolicLink -Path "$PROFILE_HOME\$($_.Name)" `
