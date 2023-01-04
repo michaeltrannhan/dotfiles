@@ -82,7 +82,7 @@ function set_git {
 function set_neovim {
   git clone --depth 1 https://github.com/wbthomason/packer.nvim \
     "$XDG_DATA_HOME/nvim/site/pack/packer/start/packer.nvim"
-  ln -frs "../shared/configs/neovim" "$XDG_CONFIG_HOME/nvim"
+  ln -frs "../shared/runcoms/neovim" "$XDG_CONFIG_HOME/nvim"
 }
 
 function main {

@@ -252,7 +252,7 @@ function Set-Neovim {
     "$env:XDG_DATA_HOME\nvim-data\site\pack\packer\start\packer.nvim"
   New-Item -ItemType SymbolicLink `
     -Path "$env:XDG_CONFIG_HOME\nvim" `
-    -Target $(Resolve-Path -LiteralPath '..\shared\configs\neovim') -Force
+    -Target $(Resolve-Path -LiteralPath '..\shared\runcoms\neovim') -Force
 }
 
 function main {
