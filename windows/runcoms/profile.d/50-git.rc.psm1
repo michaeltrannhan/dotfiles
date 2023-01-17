@@ -54,9 +54,17 @@ function work_in_progress {
 function git_main_branch {
   if (git rev-parse --git-dir 2>&1 | Out-Null) { return }
 
-  Write-Output -InputObject (
-    (git rev-parse --abbrev-ref 'origin/HEAD').Split('/')[1]
-  )
+  $refs = @('refs/heads', 'refs/remotes/origin', 'refs/remotes/upstream') | ForEach-Object -Process {
+    $i = $_
+    @('main', 'trunk', 'mainline', 'default') | ForEach-Object -Process { "$i/$_" }
+  }
+  ForEach ($ref in $refs) {
+    if (git show-ref --verify $ref) {
+      Write-Output -InputObject $ref.Split('/')[-1]
+      return
+    }
+  }
+  Write-Output -InputObject 'master'
 }
 
 # Check for develop and similarly named branches
@@ -64,7 +72,7 @@ function git_develop_branch {
   if (git rev-parse --git-dir 2>&1 | Out-Null) { return }
 
   ForEach ($branch in @('dev', 'devel', 'development')) {
-    if (-not (git show-ref -q --verify "refs/heads/$branch")) {
+    if (git show-ref --verify "refs/heads/$branch") {
       Write-Output -InputObject "$branch"
       return
     }
