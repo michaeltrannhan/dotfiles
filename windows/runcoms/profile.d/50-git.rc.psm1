@@ -30,7 +30,7 @@ function git_repo_name {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectUsageOfRedirectionOperator', '')]
   param()
   if ($repo_path = $(__git_prompt_git rev-parse --show-toplevel 2>$null)) {
-    Write-Output -InputObject $repo_path.Split('/')[-1]
+    return $repo_path.Split('/')[-1]
   }
 }
 
@@ -47,7 +47,7 @@ function _git_log_prettily {
 
 # Warn if the current branch is a WIP
 function work_in_progress {
-  if (git -c log.showSignature=false log -n 1 | Select-String -Pattern '--wip--' -Quiet) { Write-Output -InputObject 'WIP!!' }
+  if (git -c log.showSignature=false log -n 1 | Select-String -Pattern '--wip--' -Quiet) { return 'WIP!!' }
 }
 
 # Check if main exists and use instead of master
@@ -60,11 +60,10 @@ function git_main_branch {
   }
   ForEach ($ref in $refs) {
     if (git show-ref --verify $ref) {
-      Write-Output -InputObject $ref.Split('/')[-1]
-      return
+      return $ref.Split('/')[-1]
     }
   }
-  Write-Output -InputObject 'master'
+  return 'master'
 }
 
 # Check for develop and similarly named branches
@@ -73,11 +72,10 @@ function git_develop_branch {
 
   ForEach ($branch in @('dev', 'devel', 'development')) {
     if (git show-ref --verify "refs/heads/$branch") {
-      Write-Output -InputObject "$branch"
-      return
+      return "$branch"
     }
   }
-  Write-Output -InputObject 'develop'
+  return 'develop'
 }
 
 Set-Alias -Name 'g' -Value 'git'
