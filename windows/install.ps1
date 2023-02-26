@@ -260,12 +260,10 @@ function main {
   Install-OpenSSH
   Install-Prompt
   Install-Pyenv
-  Install-NVM
   Install-WSL
 
   Set-RunCom
   Set-Pyenv 3.11.1
-  Set-NVM
   Set-OpenSSH
   Set-WSL
   Set-Git

@@ -89,11 +89,9 @@ function main {
   install_base
   install_prompt
   install_pyenv
-  install_nvm
 
   set_runcom
   set_pyenv 3.11.1
-  set_nvm
   set_openssh
   set_git
   set_neovim
