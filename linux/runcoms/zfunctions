@@ -49,8 +49,6 @@ Host $h
   User $u
   IdentityFile ~/.ssh/id.d/$1_$h
   IdentitiesOnly yes
-  #AddKeysToAgent yes
-  #ForwardAgent yes
 
 EOF
 

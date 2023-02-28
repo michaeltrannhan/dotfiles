@@ -5,11 +5,11 @@ Include ~/.ssh/config.d/*.conf
 Host *.local
   AddKeysToAgent yes
   ForwardAgent yes
-  # RemoteForward /run/user/1000/gnupg/S.gpg-agent ~/.gnupg/S.gpg-agent.extra
+  #RemoteForward /run/user/1000/gnupg/S.gpg-agent ~/.gnupg/S.gpg-agent.extra
+  ControlMaster no
+  #ControlPath ~/.ssh/sockets/%C
+  #ControlPersist 600
 
 Host *
-  # Reuse connections in backlog
-  # https://github.com/PowerShell/Win32-OpenSSH/wiki/Project-Scope
-  ControlMaster no
   IdentitiesOnly yes
   ExitOnForwardFailure yes
