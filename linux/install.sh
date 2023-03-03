@@ -21,11 +21,13 @@ fi
 
 function set_runcom {
   mkdir -p "$ZDOTDIR/zshrc.d"
-  curl -SL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
-  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
 
-  ln -frs '../shared/runcoms/starship.toml' "$XDG_CONFIG_HOME/starship.toml"
+  export ZSH="$ZDOTDIR/ohmyzsh"
+  curl -SL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+
+  export ZSH_CUSTOM="$ZSH/custom"
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 
   ln -frs './runcoms/zshenv' "$HOME/.zshenv"
   for rc in ./runcoms/*; do
@@ -34,6 +36,8 @@ function set_runcom {
   for rc in ./runcoms/zshrc.d/*.rc.zsh; do
     [[ -f "$rc" ]] && ln -frs "$rc" "$ZDOTDIR/zshrc.d/$(basename "$rc")"
   done
+
+  ln -frs '../shared/runcoms/starship.toml' "$XDG_CONFIG_HOME/starship.toml"
 }
 
 function set_pyenv {
