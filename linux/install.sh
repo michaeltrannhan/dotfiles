@@ -40,15 +40,6 @@ function set_runcom {
   ln -frs '../shared/runcoms/starship.toml' "$XDG_CONFIG_HOME/starship.toml"
 }
 
-function set_pyenv {
-  local python_target
-  pyenv update
-  python_target=${1:-'3.11.1'}
-  pyenv install -s "$python_target"
-  pyenv global "$python_target"
-  pip install --upgrade pip setuptools wheel
-}
-
 function set_openssh {
   sudo mkdir -p -m 700 '/etc/ssh/sshd_config.d'
   sudo mkdir -p -m 700 "/etc/ssh/keys"
@@ -95,7 +86,6 @@ function main {
   install_pyenv
 
   set_runcom
-  set_pyenv 3.11.1
   set_openssh
   set_git
   set_neovim

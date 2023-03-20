@@ -154,21 +154,6 @@ function Install-Pyenv {
   Add-ToUserPath -Path '%USERPROFILE%\.pyenv\pyenv-win\shims'
 }
 
-function Set-Pyenv {
-  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-  param(
-    [Parameter(ValueFromRemainingArguments = $true)]
-    $pythonTarget = '3.11.1'
-  )
-  $PYENV = "$env:USERPROFILE\.pyenv\pyenv-win"
-  Start-Process -FilePath "$PYENV\bin\pyenv" `
-    -ArgumentList @('install', "$pythonTarget", '-q') -Wait
-  Start-Process -FilePath "$PYENV\bin\pyenv" `
-    -ArgumentList @('global', "$pythonTarget") -Wait
-  Start-Process -FilePath "$PYENV\versions\$pythonTarget\python.exe" `
-    -ArgumentList @('-m', 'pip', 'install', '--upgrade', 'pip', 'setuptools', 'wheel') -Wait
-}
-
 function Install-NVM {
   winget install --id 'CoreyButler.NVMforWindows'
 }
@@ -280,7 +265,6 @@ function main {
   Install-WSL
 
   Set-RunCom
-  Set-Pyenv 3.11.1
   Set-OpenSSH
   Set-WSL
   Set-Git
