@@ -25,10 +25,10 @@ Push-Location (Split-Path -Parent $Profile)
 ) | Where-Object { Test-Path "$_.ps1" } `
 | ForEach-Object -Process { . ".\$_.ps1" }
 
-Get-ChildItem -Path '.\profile.d\*' -Include '*.rc.psm1' -Exclude '.*' `
+Get-ChildItem -Path '.\profile.d\*.rc.psm1' `
 | ForEach-Object -Process { Import-Module -Name "$_" }
 
-Get-ChildItem -Path '.\profile.d\*' -Include '*.rc.ps1' -Exclude '.*' `
+Get-ChildItem -Path '.\profile.d\*.rc.ps1' `
 | ForEach-Object -Process { . "$_" }
 
 Pop-Location
