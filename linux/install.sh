@@ -42,7 +42,7 @@ function set_runcom {
 
 function set_openssh {
   sudo mkdir -p -m 700 '/etc/ssh/sshd_config.d'
-  sudo mkdir -p -m 700 "/etc/ssh/keys"
+  sudo mkdir -p -m 700 '/etc/ssh/keys'
   sudo mkdir -p -m 700 "/etc/ssh/keys/$(whoami)"
   mkdir -p "$HOME"/.ssh/{config.d,id.d,sockets}
 
@@ -58,7 +58,7 @@ function set_openssh {
 
 function install_nvm {
   local nvm_ref
-  nvm_ref=$(curl --silent "https://api.github.com/repos/nvm-sh/nvm/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+  nvm_ref=$(curl --silent 'https://api.github.com/repos/nvm-sh/nvm/releases/latest' | grep -Po '"tag_name": "\K.*?(?=")')
   curl -fSL "https://raw.githubusercontent.com/nvm-sh/nvm/${nvm_ref}/install.sh" | bash
 }
 
@@ -71,7 +71,7 @@ function set_nvm {
 }
 
 function set_git {
-  ln -frs "../shared/configs/git" "$XDG_CONFIG_HOME/git"
+  ln -frs '../shared/configs/git' "$XDG_CONFIG_HOME/git"
 }
 
 function set_neovim {
