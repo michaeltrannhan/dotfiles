@@ -119,12 +119,11 @@ source "$ZSH/oh-my-zsh.sh"
 
 eval "$(starship init zsh)"
 
-# Dotfiles (order matters)
-for rc in "${ZDOTDIR:-$HOME}"/.z{functions,aliases,bindings}; do
+for rc in ./.z{functions,aliases,bindings}; do
   [[ -f "$rc" ]] && source "$rc"
 done
 
 # https://zsh.sourceforge.io/Doc/Release/Expansion.html#Glob-Qualifiers
-for rc in "${ZDOTDIR:-$HOME}"/zshrc.d/*.rc.zsh(N); do
-  [[ -f "$rc" && "$rc" != '^.' ]] && source "$rc"
+for rc in ./zshrc.d/*.zsh(N); do
+  [[ -f "$rc" && "$rc" != '.*' ]] && source "$rc"
 done

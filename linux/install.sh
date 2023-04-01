@@ -33,7 +33,7 @@ function set_runcom {
   for rc in ./runcoms/*; do
     [[ -f "$rc" ]] && ln -frs "$rc" "$ZDOTDIR/.$(basename "$rc")"
   done
-  for rc in ./runcoms/zshrc.d/*.rc.zsh; do
+  for rc in ./runcoms/zshrc.d/*; do
     [[ -f "$rc" ]] && ln -frs "$rc" "$ZDOTDIR/zshrc.d/$(basename "$rc")"
   done
 

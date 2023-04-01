@@ -134,7 +134,7 @@ function Set-RunCom {
     New-Item -ItemType SymbolicLink -Path "$PROFILE_HOME\$($_.Name)" `
       -Target $_.FullName -Force
   }
-  Get-ChildItem -Path '.\runcoms\profile.d\*.rc.ps1' | ForEach-Object -Process {
+  Get-ChildItem -Path '.\runcoms\profile.d\*' | ForEach-Object -Process {
     New-Item -ItemType SymbolicLink -Path "$PROFILE_HOME\profile.d\$($_.Name)" `
       -Target $_.FullName -Force
   }
