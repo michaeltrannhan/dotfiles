@@ -59,7 +59,7 @@ function git_main_branch {
     @('main', 'trunk', 'mainline', 'default') | ForEach-Object -Process { "$i/$_" }
   }
   ForEach ($ref in $refs) {
-    if (git show-ref --verify $ref) {
+    if (git show-ref --quiet --verify $ref) {
       return $ref.Split('/')[-1]
     }
   }
@@ -71,7 +71,7 @@ function git_develop_branch {
   if (git rev-parse --git-dir 2>&1 | Out-Null) { return }
 
   ForEach ($branch in @('dev', 'devel', 'development')) {
-    if (git show-ref --verify "refs/heads/$branch") {
+    if (git show-ref --quiet --verify "refs/heads/$branch") {
       return "$branch"
     }
   }
