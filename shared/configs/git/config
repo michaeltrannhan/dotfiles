@@ -1,3 +1,9 @@
+[core]
+  attributesFile = ~/.config/git/attributes
+  excludesFile = ~/.config/git/ignore
+  ignoreCase = false
+  pager = less
+
 [commit]
   template = ~/.config/git/message
 
@@ -5,10 +11,6 @@
   ign = ls-files -o -i --exclude-standard
   wdiff = diff -w --word-diff=color
   whatadded = log --diff-filter=A
-
-[core]
-  pager = less
-  ignoreCase = false
 
 [init]
   defaultBranch = main
