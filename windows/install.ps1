@@ -266,7 +266,7 @@ function main {
 
   Set-RunCom
   Set-OpenSSH
-  Set-WSL
+  #Set-WSL
   Set-Git
   Set-Neovim
 }

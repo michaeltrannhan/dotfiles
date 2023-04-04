@@ -1,4 +1,2 @@
+# https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configuration-setting-for-wslconfig
 [wsl2]
-localhostForwarding=true
-memory=4GB
-swap=0
